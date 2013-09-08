@@ -2,7 +2,7 @@ This is the GitHub source code repository for ControLeo.  ControLeo is an Arduin
 
 In this folder are:
 1. README - this file
-2. ControLeo.pdf - the hardware schematic for ControLeo
+2. ControLeo-Schematic.png - the hardware schematic for ControLeo
 3. A "ControLeo" folder.  This is an Arduino library and examples for ContrLeo
 
 To install the ControLeo library, please refer to:

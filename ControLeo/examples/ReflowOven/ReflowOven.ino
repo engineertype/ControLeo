@@ -83,7 +83,7 @@ typedef enum
 // This array defines the temperature transition points during the relow process
 int tempPoints[2][TEMPERATURE_POINTS] = {
       {50, 150, 205, 225, 235},  // Lead-free
-      {50, 150, 200, 215, 225},  // Leaded
+      {50, 130, 160, 180, 185},  // Leaded
     };
     
 // Each element of this array is a 8-second window for an element.  For example, if the value is 0b11001111 then
@@ -101,9 +101,9 @@ int elementCycle[2][NO_OF_ELEMENTS][TEMPERATURE_POINTS] = {
         {0b11101110, 0b01010011, 0b00010000, 0b01101101, 0b00000000},  // Boost Element
       },
       {    // Leaded
-        {0b11011101, 0b11001101, 0b01000100, 0b11111110, 0b00010001},  // Upper element
-        {0b11111111, 0b11111110, 0b10101011, 0b11111111, 0b01000100},  // Lower element
-        {0b11101111, 0b01110011, 0b00010000, 0b11101101, 0b00000000},  // Boost Element
+        {0b11011101, 0b11001101, 0b01010100, 0b11011110, 0b00010001},  // Upper element
+        {0b11110111, 0b10111110, 0b10111011, 0b10111111, 0b01000100},  // Lower element
+        {0b10101010, 0b01110011, 0b00010000, 0b11101101, 0b00000000},  // Boost Element
       }
     };
     
@@ -271,7 +271,7 @@ void loop()
   if (updateThings) {
     if (reflowStatus == REFLOW_STATUS_OFF) {
       if (currentTemperature > ROOM_TEMP)
-        displayMessage("Cooling", currentTemperature);
+        displayMessage("Cool - open door", currentTemperature);
       else {
         if (reflowType == REFLOW_TYPE_LEAD_FREE)
           displayMessage("Lead-free solder", currentTemperature);

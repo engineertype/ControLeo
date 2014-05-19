@@ -38,7 +38,7 @@
 *
 * ==========================================
 * Limor Fried of Adafruit (www.adafruit.com)
-* Author of Arduino MAX6675 library. Adafruit has been the source of tonnes of
+* Author of Arduino MAX6675 library. Adafruit has been the source of many
 * tutorials, examples, and libraries for everyone to learn.
 *
 * Disclaimer
@@ -53,6 +53,7 @@
 * Revision  Description
 * ========  ===========
 * 1.00      Initial public release.
+* 1.1       Changed some default temperatures
 *******************************************************************************/
 
 
@@ -75,14 +76,21 @@ typedef enum
 
 
 // ***** CONSTANTS *****
+#define ONE_SECOND           1000  // Milliseconds in one second
 #define SENSOR_SAMPLING_TIME 1000  // Frequency of reading temperature, in milliseconds
 #define ROOM_TEMP            50    // Temperature above which reflow process cannot be started
 #define TEMPERATURE_POINTS   5     // Number of phases in reflow process
 #define NO_OF_ELEMENTS       3     // NUmber of heating elements in the reflow oven
 
 // This array defines the temperature transition points during the relow process
+// These values are intentionally low, but are good for your first run.  You need to tune
+// these values for your oven.  It typically takes 5-10 runs before the values are correct.
+// The last value is the "waiting" temperature, waiting for the thermocouple to register
+// the actual oven temperature.  Although it is determined based on temperature, it should
+// be 5-10 seconds in duration.  Tune this value to get a 5-10 second duration for the
+// "waiting" phase.
 int tempPoints[2][TEMPERATURE_POINTS] = {
-      {50, 150, 205, 225, 235},  // Lead-free
+      {50, 140, 180, 205, 210},  // Lead-free
       {50, 130, 160, 180, 185},  // Leaded
     };
     
@@ -96,14 +104,14 @@ int tempPoints[2][TEMPERATURE_POINTS] = {
 // ==================== YOU SHOULD TUNE THESE VALUES TO YOUR REFLOW OVEN!!! ====================
 int elementCycle[2][NO_OF_ELEMENTS][TEMPERATURE_POINTS] = {
       {    // Lead-free
-        {0b11011101, 0b11001101, 0b01000100, 0b11011110, 0b00010001},  // Upper element
+        {0b11011101, 0b11001101, 0b01000100, 0b11111110, 0b00010001},  // Upper element
         {0b10111111, 0b10111110, 0b10101011, 0b10111111, 0b01000100},  // Lower element
         {0b11101110, 0b01010011, 0b00010000, 0b01101101, 0b00000000},  // Boost Element
       },
       {    // Leaded
-        {0b11011101, 0b11001101, 0b01010100, 0b11011110, 0b00010001},  // Upper element
+        {0b11011101, 0b11001101, 0b01010100, 0b11111110, 0b00010001},  // Upper element
         {0b11110111, 0b10111110, 0b10111011, 0b10111111, 0b01000100},  // Lower element
-        {0b10101010, 0b01110011, 0b00010000, 0b11101101, 0b00000000},  // Boost Element
+        {0b10101010, 0b01110011, 0b00010000, 0b11001101, 0b00000000},  // Boost Element
       }
     };
     
@@ -147,7 +155,7 @@ void setup()
   lcd.clear();
   lcd.print("ControLeo");
   lcd.setCursor(0, 1);
-  lcd.print("Reflow Oven 1.0");
+  lcd.print("Reflow Oven 1.1");
   delay(3000);
   lcd.clear();
 }
@@ -184,7 +192,7 @@ void loop()
   // Should things be updated?
   if (timeNow > nextCheck) {
     updateThings = true;
-    nextCheck += 1000;
+    nextCheck = timeNow + ONE_SECOND;
   }
 
   // See if any buttons are pressed
@@ -216,7 +224,7 @@ void loop()
       // Turn on buzzer to indicate completion
       lcd.setBuzzer(ON);
       // Turn off the buzzer after 1 second
-      buzzerPeriod = timeNow + 1000;
+      buzzerPeriod = timeNow + ONE_SECOND;
       return;
     }
     
@@ -262,8 +270,8 @@ void loop()
     if (currentTemperature >= 99 && currentTemperature <= 100) {
       // Turn on buzzer to indicate boards can be removed
       lcd.setBuzzer(ON);
-      // Turn off the buzzer after 500ms
-      buzzerPeriod = timeNow + 500;
+      // Turn off the buzzer after 100ms (plus the time spent in the 99-100 degree range)
+      buzzerPeriod = timeNow + 100;
     }
   }
     
@@ -309,7 +317,7 @@ int getButton()
   long nowMillis = millis();
   int buttonValue;
   
-  // If insufficient time has passed, just return the last value read
+  // If insufficient time has passed, return that no buttons were pressed
   if (lastChangeMillis + DEBOUNCE_INTERVAL > nowMillis)
     return CONTROLEO_BUTTON_NONE;
   

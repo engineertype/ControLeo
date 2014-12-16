@@ -1,11 +1,20 @@
 This is the GitHub source code repository for ControLeo.  ControLeo is an Arduino Leonardo controller with quad relay outputs.
 
+This product was launched on Kickstarter:
+https://www.kickstarter.com/projects/1471240030/controleo-an-arduino-compatible-controller
+
+ControLeo has been redesigned and relaunched as ControLeo2.  You can read more about ControLeo2 here:
+http://www.whizoo.com
+
 In this folder are:
 1. README - this file
-2. ControLeo-Schematic.png - the hardware schematic for ControLeo
-3. A "ControLeo" folder.  This is an Arduino library and examples for ContrLeo
+2. ControLeo_soldering.pdf - Instructions on how to solder ControLeo
+3. A "ControLeo" folder.  This is an Arduino library and examples for ControLeo
 
 To install the ControLeo library, please refer to:
 http://arduino.cc/en/Guide/Libraries
 
-Peter Easton 2013
+Peter Easton 2014
+http://whizoo.com
+
+
